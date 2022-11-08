@@ -18,7 +18,7 @@ int _atoi(char *prmString)
 	{
 		current = prmString[cLoop];
 
-		if (_isdigit(current))
+		if (isdigit(current))
 		{
 			number *= 10;
 			number += current - 48;
