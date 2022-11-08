@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <ctype.h>
 
 /* for read/write buffers */
 #define READ_BUF_SIZE 1024
@@ -103,14 +104,14 @@ typedef struct passinfo
 	int status;
 
 	char **cmd_buf; /* pointer to cmd ; chain buffer, for memory mangement */
-	cmd_buf_type; /* CMD_type ||, &&, ; */
+
 	int readfd;
 	int histcount;
 } info_t;
 #define INFO_INIT \
-{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
 
-		0, 0, 0}
+
+
 
 
 /**
