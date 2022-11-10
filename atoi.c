@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <ctype.h>
 
 /**
  * _atoi - convert a string to an integer.
@@ -17,7 +18,7 @@ int _atoi(char *prmString)
 	{
 		current = prmString[cLoop];
 
-		if (_isdigit(current))
+		if (isdigit(current))
 		{
 			number *= 10;
 			number += current - 48;
