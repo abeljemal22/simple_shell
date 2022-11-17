@@ -1,93 +1,80 @@
-#include "shell.h"
+#include "main.h"
 
 /**
- * _myenv - prints the current environment
- * @info: Structure containing potential arguments. Used to maintain constant function prototype.
+ * cmp_env_name - compares env variables names
+ * with the name passed.
+ * @nenv: name of the environment variable
+ * @name: name passed
  *
- *Return: Always 0
+ * Return: 0 if are not equal. Another value if they are.
  */
-int _myenv(info_t *info)
-{
-	print_list_str(info->env);
-	return (0);
-}
-
-/**
- * _getenv - gets the value of an environ variable
- * @info: Structure containing potential arguments. Used to maintain
- * @name: env var name
- *
- * Return: the value
- */
-char *_getenv(info_t *info, const char *name)
-{
-	list_t *node = info->env;
-	char *p;
-
-	while (node)
-	{
-		p = starts_with(node->str, name);
-		if (p && *p)
-			return (p);
-		node = node->next;
-	}
-	return (NULL);
-
-}
-
-/**
- * _mysetenv - Initialize a new environment variable,
- *       or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * Return: Always 0
- */
-int _mysetenv(info_t *info)
-{
-	if (info->argc != 3)
-	{
-		_eputs("Incorrect number of arguements\n");
-		return (1);
-	}
-	if (_setenv(info, info->argv[1], info->argv[2]))
-		return (0);
-	return (1);
-}
-
-/**
- * _myunsetenv - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *  constant function prototype.
- *  Return: Always 0
- */
-int _myunsetenv(info_t *info)
+int cmp_env_name(const char *nenv, const char *name)
 {
 	int i;
 
-	if (info->argc == 1)
+	for (i = 0; nenv[i] != '='; i++)
 	{
-		_eputs("Too few arguements.\n");
-		return (1);
+		if (nenv[i] != name[i])
+		{
+			return (0);
+		}
 	}
-	for (i = 1; i <= info->argc; i++)
-		_unsetenv(info, info->argv[i]);
 
-	return (0);
+	return (i + 1);
 }
-/** 
- * populate_env_list - populates env linked list
- * @info: Structure containing potential arguments. Used to maintain
- *              constant function prototype.
- * Return: Always 0
+
+/**
+ * _getenv - get an environment variable
+ * @name: name of the environment variable
+ * @_environ: environment variable
+ *
+ * Return: value of the environment variable if is found.
+ * In other case, returns NULL.
  */
-int populate_env_list(info_t *info)
+char *_getenv(const char *name, char **_environ)
 {
-	list_t *node = NULL;
-	size_t i;
+	char *ptr_env;
+	int i, mov;
 
-	for (i = 0; environ[i]; i++)
-		add_node_end(&node, environ[i], 0);
-	info->env = node;
-	return (0);
+	/* Initialize ptr_env value */
+	ptr_env = NULL;
+	mov = 0;
+	/* Compare all environment variables */
+	/* environ is declared in the header file */
+	for (i = 0; _environ[i]; i++)
+	{
+		/* If name and env are equal */
+		mov = cmp_env_name(_environ[i], name);
+		if (mov)
+		{
+			ptr_env = _environ[i];
+			break;
+		}
+	}
+
+	return (ptr_env + mov);
 }
 
+/**
+ * _env - prints the evironment variables
+ *
+ * @datash: data relevant.
+ * Return: 1 on success.
+ */
+int _env(data_shell *datash)
+{
+	int i, j;
+
+	for (i = 0; datash->_environ[i]; i++)
+	{
+
+		for (j = 0; datash->_environ[i][j]; j++)
+			;
+
+		write(STDOUT_FILENO, datash->_environ[i], j);
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	datash->status = 0;
+
+	return (1);
+}
