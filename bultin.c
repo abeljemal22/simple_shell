@@ -1,28 +1,62 @@
 #include "main.h"
 
 /**
- * get_builtin - builtin that pais the command in the arg
- * @cmd: command
- * Return: function pointer of the builtin command
+ *env - prints the current_environnement
+ *@tokenized_command: command entered
+ *
+ *Return: void
  */
-int (*get_builtin(char *cmd))(data_shell *)
+
+void env(char **tokenized_command __attribute__((unused)))
 {
-	builtin_t builtin[] = {
-		{ "env", _env },
-		{ "exit", exit_shell },
-		{ "setenv", _setenv },
-		{ "unsetenv", _unsetenv },
-		{ "cd", cd_shell },
-		{ "help", get_help },
-		{ NULL, NULL }
-	};
 	int i;
 
-	for (i = 0; builtin[i].name; i++)
+	for (i = 0; environ[i] != NULL; i++)
 	{
-		if (_strcmp(builtin[i].name, cmd) == 0)
-			break;
+		print(environ[i], STDOUT_FILENO);
+		print("\n", STDOUT_FILENO);
 	}
+}
 
-	return (builtin[i].f);
+/**
+ * quit - exits the shell
+ * @tokenized_command: command entered
+ *
+ * Return: void
+ */
+
+void quit(char **tokenized_command)
+{
+	int num_token = 0, arg;
+
+	for (; tokenized_command[num_token] != NULL; num_token++)
+		;
+	if (num_token == 1)
+	{
+		free(tokenized_command);
+		free(line);
+		free(commands);
+		exit(status);
+	}
+	else if (num_token == 2)
+	{
+		arg = _atoi(tokenized_command[1]);
+		if (arg == -1)
+		{
+			print(shell_name, STDERR_FILENO);
+			print(": 1: exit: Illegal number: ", STDERR_FILENO);
+			print(tokenized_command[1], STDERR_FILENO);
+			print("\n", STDERR_FILENO);
+			status = 2;
+		}
+		else
+		{
+			free(line);
+			free(tokenized_command);
+			free(commands);
+			exit(arg);
+		}
+	}
+	else
+		print("$: exit doesn't take more than one argument\n", STDERR_FILENO);
 }
