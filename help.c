@@ -1,73 +1,112 @@
 #include "main.h"
 
 /**
- * aux_help_env - Help information for the builtin env
- * Return: no return
+ *_strcmp - compare two strings
+ *@first: first string to be compared
+ *@second: second string to be compared
+ *
+ * Return: difference of the two strings
  */
-void aux_help_env(void)
+
+int _strcmp(char *first, char *second)
 {
-	char *help = "env: env [option] [name=value] [command [args]]\n\t";
+	int i = 0;
 
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "Print the enviroment of the shell.\n";
-	write(STDOUT_FILENO, help, _strlen(help));
-
-}
-/**
- * aux_help_setenv - Help information for the builtin setenv
- * Return: no return
- */
-void aux_help_setenv(void)
-{
-
-	char *help = "setenv: setenv (const char *name, const char *value,";
-
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "int replace)\n\t";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "Add a new definition to the environment\n";
-	write(STDOUT_FILENO, help, _strlen(help));
-}
-/**
- * aux_help_unsetenv - Help information for the builtin unsetenv
- * Return: no return
- */
-void aux_help_unsetenv(void)
-{
-	char *help = "unsetenv: unsetenv (const char *name)\n\t";
-
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "Remove an entry completely from the environment\n";
-	write(STDOUT_FILENO, help, _strlen(help));
+	while (first[i] != '\0')
+	{
+		if (first[i] != second[i])
+			break;
+		i++;
+	}
+	return (first[i] - second[i]);
 }
 
-
 /**
- * aux_help_general - Entry point for help information for the help builtin
- * Return: no return
+ *_strcat - concatenates two strings
+ *@destination: string to be concatenated to
+ *@source:  string to concatenate
+ *
+ * Return: address of the new string
  */
-void aux_help_general(void)
+
+char *_strcat(char *destination, char *source)
 {
-	char *help = "^-^ bash, version 1.0(1)-release\n";
+	char *new_string =  NULL;
+	int len_dest = _strlen(destination);
+	int len_source = _strlen(source);
 
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "These commands are defined internally.Type 'help' to see the list";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "Type 'help name' to find out more about the function 'name'.\n\n ";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = " alias: alias [name=['string']]\n cd: cd [-L|[-P [-e]] [-@]] ";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "[dir]\nexit: exit [n]\n  env: env [option] [name=value] [command ";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "[args]]\n  setenv: setenv [variable] [value]\n  unsetenv: ";
-	write(STDOUT_FILENO, help, _strlen(help));
-	help = "unsetenv [variable]\n";
-	write(STDOUT_FILENO, help, _strlen(help));
+	new_string = malloc(sizeof(*new_string) * (len_dest + len_source + 1));
+	_strcpy(destination, new_string);
+	_strcpy(source, new_string + len_dest);
+	new_string[len_dest + len_source] = '\0';
+	return (new_string);
 }
+
 /**
- * aux_help_exit - Help information fot the builint exit
- * Return: no return
+ *_strspn - gets the length of a prefix substring
+ *@str1: string to be searched
+ *@str2: string to be used
+ *
+ *Return: number of bytes in the initial segment of 5 which are part of accept
  */
+
+int _strspn(char *str1, char *str2)
+{
+	int i = 0;
+	int match = 0;
+
+	while (str1[i] != '\0')
+	{
+		if (_strchr(str2, str1[i]) == NULL)
+			break;
+		match++;
+		i++;
+	}
+	return (match);
+}
+
+/**
+ *_strcspn - computes segment of str1 which consists of characters not in str2
+ *@str1: string to be searched
+ *@str2: string to be used
+ *
+ *Return: index at which a char in str1 exists in str2
+ */
+
+
+int _strcspn(char *str1, char *str2)
+{
+	int len = 0, i;
+
+	for (i = 0; str1[i] != '\0'; i++)
+	{
+		if (_strchr(str2, str1[i]) != NULL)
+			break;
+		len++;
+	}
+	return (len);
+}
+
+/**
+ *_strchr - locates a char in a string
+ *@s: string to be searched
+ *@c: char to be checked
+ *
+ *Return: pointer to the first occurence of c in s
+ */
+
+char *_strchr(char *s, char c)
+{
+	int i = 0;
+
+	for (; s[i] != c && s[i] != '\0'; i++)
+		;
+	if (s[i] == c)
+		return (s + i);
+	else
+		return (NULL);
+}
+
 void aux_help_exit(void)
 {
 	char *help = "exit: exit [n]\n Exit shell.\n";
